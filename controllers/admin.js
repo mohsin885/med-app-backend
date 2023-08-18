@@ -43,19 +43,20 @@ exports.createProuct = (req, res, next) => {
     throw error;
   }
 
-  console.log('req',req.body);
   // if (!req.file) {
   //   const error = new Error('No image provided.');
   //   error.statusCode = 422;
   //   throw error;
   // }
   // const imageUrl = req.file.path;
+  const imageUrl =req.body.image;
   const name = req.body.name;
   const price = req.body.price;
   const discountPrice = req.body.discountPrice;
   const manufacturer = req.body.manufacturer;
   const brand = req.body.brand;
   const percentageOff=100 * (price - discountPrice) / price
+  
   const product = new Product({
     name: name,
     price: price,
