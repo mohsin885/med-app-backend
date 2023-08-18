@@ -12,7 +12,7 @@ const errorController = require('./controllers/error');
 const User = require('./models/user');
 const { v4: uuidv4 } = require('uuid');
 const MONGODB_URI =
-'mongodb://127.0.0.1:27017/med';
+'mongodb+srv://mughalmohsin5999:zm3cMlOOQuPShCrq@cluster0.d6hyhqi.mongodb.net/';
 
 const app = express();
 const store = new MongoDBStore({
