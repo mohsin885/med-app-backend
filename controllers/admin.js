@@ -44,12 +44,12 @@ exports.createProuct = (req, res, next) => {
   }
 
   console.log('req',req.body);
-  if (!req.file) {
-    const error = new Error('No image provided.');
-    error.statusCode = 422;
-    throw error;
-  }
-  const imageUrl = req.file.path;
+  // if (!req.file) {
+  //   const error = new Error('No image provided.');
+  //   error.statusCode = 422;
+  //   throw error;
+  // }
+  // const imageUrl = req.file.path;
   const name = req.body.name;
   const price = req.body.price;
   const discountPrice = req.body.discountPrice;
