@@ -83,6 +83,7 @@ exports.postCart = (req, res, next) => {
       });
     });
 };
+
 exports.postUpdateCart = (req, res, next) => {
   console.log(req.userId);
   const prodId = req.body.productId;
@@ -118,50 +119,50 @@ exports.postCartDeleteProduct = (req, res, next) => {
     .catch(err => console.log(err));
   })
 };
-exports.postOrder = (req, res, next) => {
-  if(req.user.cart.items.length>0){
-  req.user
-    .populate('cart.items.productId')
-    .execPopulate()
-    .then(user => {
-      const products = user.cart.items.map(i => {
-        return { quantity: i.quantity, product: { ...i.productId._doc } };
-      });
-      const order = new Order({
-        user: {
-          email: req.user.email,
-          userId: req.user
-        },
-        products: products
-      });
-      return order.save();
-    })
-    .then(result => {
-      return req.user.clearCart();
-    })
-    .then(() => {
-      res.status(201).json({
-        message: 'Order created successfully',
-    })
-    })
-    .catch(err => console.log(err));
-  }
-  else{
-    res.status(201).json({
-      success:false,
-      message: 'Order creation failed',
-  })
+
+exports.postOrder = async(req, res, next) => {
+  try {
+    const data = req.body;
+
+    const order = new Order({
+      user: {
+        email: data.user.name,
+        userId: data.user.userId,
+      },
+      products: data.cart.map(item => ({
+        product: item.id,
+        quantity: item.qty,
+      })),
+    });
+
+    // Save the order instance to the database
+    const savedOrder = await order.save();
+    
+    res.json(savedOrder);
+  } catch (error) {
+    console.error('Error saving order:', error);
+    res.status(500).json({ error: 'Error saving order' });
   }
 };
 
-exports.getOrders = (req, res, next) => {
-  Order.find({ 'user.userId': req.user._id })
-    .then(orders => {
-       res.status(201).json({
-        message: 'Order retrived successfully',
-        success:true,
-        orders:orders
-    })
-    })
-    .catch(err => console.log(err));
+exports.getOrders = async(req, res, next) => {
+  try {
+    // Retrieve all orders from the database and populate user and product details
+    const orders = await Order.find()
+      .populate({
+        path: 'user.userId',
+        select: 'name email'
+      })
+      .populate({
+        path: 'products.product',
+        select: 'name price qty',
+      })
+      .exec();
+
+    // Send the list of orders with populated details as a JSON response
+    res.json(orders);
+  } catch (error) {
+    console.error('Error fetching orders:', error);
+    res.status(500).json({ error: 'Error fetching orders' });
+  }
 };
