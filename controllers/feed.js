@@ -128,6 +128,7 @@ exports.postOrder = async(req, res, next) => {
     const order = new Order({
       user: {
         email: data.user.name,
+        address:data.user.address,
         userId: data.user.userId,
       },
       products: data.cart.map(item => ({
