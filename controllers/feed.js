@@ -178,3 +178,36 @@ exports.getUsers = async(req, res, next) => {
     res.status(500).json({ error: "Server error" });
   }
 };
+
+exports.deleteUser = async(req, res, next) => {
+  try {
+    const userId = req.params.id;
+    const deletedUser = await user.findByIdAndRemove(userId);
+
+    if (!deletedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    return res.status(200).json({ message: "User deleted successfully" });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+exports.deleteOrder = async(req, res, next) => {
+  try {
+    const orderId = req.params.id;
+    const deletedUser = await Order.findByIdAndRemove(orderId);
+
+    if (!deletedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    return res.status(200).json({ message: "Order deleted successfully" });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
