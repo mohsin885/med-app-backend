@@ -182,7 +182,7 @@ exports.getUsers = async(req, res, next) => {
 exports.deleteUser = async(req, res, next) => {
   try {
     const userId = req.params.id;
-    const deletedUser = await user.findByIdAndRemove(userId);
+    const deletedUser = await user.findOneAndDelete(userId);
 
     if (!deletedUser) {
       return res.status(404).json({ message: "User not found" });
@@ -198,10 +198,10 @@ exports.deleteUser = async(req, res, next) => {
 exports.deleteOrder = async(req, res, next) => {
   try {
     const orderId = req.params.id;
-    const deletedUser = await Order.findByIdAndRemove(orderId);
+    const deletedUser = await Order.findOneAndDelete(orderId);
 
     if (!deletedUser) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ message: "Order not found" });
     }
 
     return res.status(200).json({ message: "Order deleted successfully" });

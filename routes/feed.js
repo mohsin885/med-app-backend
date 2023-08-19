@@ -27,6 +27,6 @@ router.post('/create-order', shopController.postOrder);
 router.get('/orders', shopController.getOrders);
 router.get('/users', shopController.getUsers);
 router.delete('/user/:id', shopController.deleteUser);
-router.delete('/order/:id', shopController.deleteUser);
+router.delete('/order/:id', shopController.deleteOrder);
 
 module.exports = router;
