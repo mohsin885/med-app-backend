@@ -211,3 +211,18 @@ exports.deleteOrder = async(req, res, next) => {
   }
 };
 
+exports.ordersById = async(req, res, next) => {
+  try {
+    const userId = req.params.id;
+    
+    // Query the database to find all orders related to the user ID
+    const orders = await Order.find({ 'user.userId': userId })
+      .populate('products.product');
+    
+    res.json({ success: true, orders });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, error: 'Error fetching orders' });
+  }
+};
+

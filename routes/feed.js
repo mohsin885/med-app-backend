@@ -28,5 +28,6 @@ router.get('/orders', shopController.getOrders);
 router.get('/users', shopController.getUsers);
 router.delete('/user/:id', shopController.deleteUser);
 router.delete('/order/:id', shopController.deleteOrder);
+router.get('/orders_by_id/:id', shopController.ordersById);
 
 module.exports = router;
