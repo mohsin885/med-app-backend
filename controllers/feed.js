@@ -1,5 +1,6 @@
 const Product = require('../models/product');
 const Order = require('../models/order');
+const user = require('../models/user');
 
 exports.getProducts = (req, res, next) => {
   Product.find()
@@ -164,5 +165,15 @@ exports.getOrders = async(req, res, next) => {
   } catch (error) {
     console.error('Error fetching orders:', error);
     res.status(500).json({ error: 'Error fetching orders' });
+  }
+};
+
+exports.getUsers = async(req, res, next) => {
+  try {
+    const users = await user.find();
+    res.json(users);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Server error" });
   }
 };
