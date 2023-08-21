@@ -1,6 +1,7 @@
 const Product = require('../models/product');
 const Order = require('../models/order');
 const user = require('../models/user');
+const product = require('../models/product');
 
 exports.getProducts = (req, res, next) => {
   Product.find()
@@ -14,111 +15,6 @@ exports.getProducts = (req, res, next) => {
     .catch(err => {
       console.log(err);
     });
-};
-exports.getProductDeals = (req, res, next) => {
-  Product.find().sort({percentageOff: 'desc'}).limit(3)
-    .then(products => {
-      res.status(201).json({
-        message: 'Daily Deals Retrived successfully!',
-        success:true,
-        products:products
-        });
-    })
-    .catch(err => {
-      console.log(err);
-    });
-};
-
-exports.getProduct = (req, res, next) => {
-  const prodId = req.params.productId;
-  Product.findById(prodId)
-    .then(product => {
-      res.status(201).json({
-        message: 'Product Retrived successfully!',
-        success:true,
-        product:product
-        });
-    })
-    .catch(err => console.log(err));
-};
-
-exports.getIndex = (req, res, next) => {
-  Product.find()
-    .then(products => {
-      res.json
-    })
-    .catch(err => {
-      console.log(err);
-    });
-};
-
-exports.getCart = (req, res, next) => {
-  req.user
-    .populate('cart.items.productId')
-    .execPopulate()
-    .then(user => {
-      const products = user.cart.items;
-      res.status(201).json({
-        message: 'Cart Retrived Sucessfully',
-        success:true,
-        products:products
-        });
-    })
-    .catch(err => console.log(err));
-};
-
-exports.postCart = (req, res, next) => {
-  console.log(req.userId);
-  const prodId = req.body.productId;
-  Product.findById(prodId)
-    .then(product => {
-      return req.user.addToCart(product);
-    })
-    .then(result => {
-      result.populate('cart.items.productId').execPopulate().then(user=>{
-      res.status(201).json({
-        message: 'Product successfully added to cart!',
-        success:true,
-        products:user.cart.items
-        });
-      });
-    });
-};
-
-exports.postUpdateCart = (req, res, next) => {
-  console.log(req.userId);
-  const prodId = req.body.productId;
-  const quantity=req.body.quantity;
-  Product.findById(prodId)
-    .then(product => {
-      return req.user.addToCart(product,quantity);
-    })
-    .then(result => {
-      result.populate('cart.items.productId').execPopulate().then(user=>{
-        res.status(201).json({
-          message: 'Cart Updated Successfully',
-          success:true,
-          products:user.cart.items
-          });
-      })
-      
-    });
-};
-
-exports.postCartDeleteProduct = (req, res, next) => {
-  const prodId = req.body.productId;
-  req.user
-    .removeFromCart(prodId)
-    .then(result => {
-      result.populate('cart.items.productId').execPopulate().then(user=>{
-      res.status(201).json({
-        message: 'Product successfully removed from cart!',
-        success:true,
-        products:user.cart.items
-    })
-    })
-    .catch(err => console.log(err));
-  })
 };
 
 exports.postOrder = async(req, res, next) => {
@@ -137,7 +33,6 @@ exports.postOrder = async(req, res, next) => {
       })),
     });
 
-    // Save the order instance to the database
     const savedOrder = await order.save();
     
     res.json(savedOrder);
@@ -205,6 +100,22 @@ exports.deleteOrder = async(req, res, next) => {
     }
 
     return res.status(200).json({ message: "Order deleted successfully" });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+exports.deleteProduct = async(req, res, next) => {
+  try {
+    const Id = req.params.id;
+    const deletedProduct = await product.findOneAndDelete(Id);
+
+    if (!deletedProduct) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    return res.status(200).json({ message: "Product deleted successfully" });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Internal server error" });

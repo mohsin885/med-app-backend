@@ -7,9 +7,6 @@ const isAuth = require('../middleware/IsAuthenticatedAdmin');
 
 const router = express.Router();
 
-// /admin/add-product => GET
-// router.get('/add-product', adminController.getProducts);
-
 // /admin/products => GET
 router.get('/products' ,adminController.getProducts);
 

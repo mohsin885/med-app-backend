@@ -65,7 +65,6 @@ exports.createProuct = (req, res, next) => {
     manufacturer:manufacturer,
     brand:brand,
     percentageOff:percentageOff,
-    // userId: req.user
   });
   product
     .save()
