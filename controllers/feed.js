@@ -76,8 +76,8 @@ exports.getUsers = async(req, res, next) => {
 
 exports.deleteUser = async(req, res, next) => {
   try {
-    const userId = req.params.id;
-    const deletedUser = await user.findOneAndDelete(userId);
+    const Id = req.params.id;
+    const deletedUser = await user.deleteOne({_id:Id});
 
     if (!deletedUser) {
       return res.status(404).json({ message: "User not found" });
@@ -92,8 +92,8 @@ exports.deleteUser = async(req, res, next) => {
 
 exports.deleteOrder = async(req, res, next) => {
   try {
-    const orderId = req.params.id;
-    const deletedUser = await Order.findOneAndDelete(orderId);
+    const Id = req.params.id;
+    const deletedUser = await Order.deleteOne({_id:Id});
 
     if (!deletedUser) {
       return res.status(404).json({ message: "Order not found" });
@@ -126,7 +126,6 @@ exports.ordersById = async(req, res, next) => {
   try {
     const userId = req.params.id;
     
-    // Query the database to find all orders related to the user ID
     const orders = await Order.find({ 'user.userId': userId })
       .populate('products.product');
     
@@ -136,4 +135,3 @@ exports.ordersById = async(req, res, next) => {
     res.status(500).json({ success: false, error: 'Error fetching orders' });
   }
 };
-
